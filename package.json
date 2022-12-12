@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack",
+    "build": "npm install webpack-cli && webpack",
     "start": "node .",
     "dev": "nodemon index.js"
   },
