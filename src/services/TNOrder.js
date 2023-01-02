@@ -14,7 +14,7 @@ const header = {
 const getIds = async (from) => {
   const ids = []
 
-  for (let i = 1; i < 15; i++) {
+  for (let i = 1; i < 20; i++) {
     console.log(i)
     const response = await axios.get(
       `https://api.tiendanube.com/v1/1705915/orders?fields=id,number&page=${i}&per_page=200`,

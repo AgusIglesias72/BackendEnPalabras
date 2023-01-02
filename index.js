@@ -4,10 +4,12 @@ import meliRouter from './src/routes/mercadolibre.routes.js'
 import stockRouter from './src/routes/stock.routes.js'
 import getAllRouter from './src/routes/getAll.routes.js'
 import otherRouter from './src/routes/other.routes.js'
+import cors from 'cors'
 
 const app = express()
 
 app.use(express.json())
+app.use(cors())
 
 const PORT = process.env.PORT ?? 3000
 

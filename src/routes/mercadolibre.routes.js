@@ -51,39 +51,46 @@ meliRouter.post('/', async (_req, res) => {
 })
 
 meliRouter.post('/:date', async (req, res) => {
-  const token = await getToken()
-  const date = req.params.date
-  let from = getTwoDaysBefore()
-  if (date && date.length === 10 && date.includes('-')) {
-    from = date
-  }
-
-  const rows = await getRows('Mercado Libre!AT2:AT')
-  const status = rows.status
-  const values = rows.data.values
-
-  let data
-  let index
-  if (status === 200) {
-    if (values && values.length > 0) {
-      index = values.findIndex((value) => value[0] == [from]) + 2
-      const range = `Mercado Libre!AT${index}:CM`
-      if (index > 1) {
-        await clearData(range)
-      }
+  try {
+    const token = await getToken()
+    const date = req.params.date
+    let from = getTwoDaysBefore()
+    if (date && date.length === 10 && date.includes('-')) {
+      from = date
     }
-    data = await getOrders(token, from)
 
-    const append = await appendData('Mercado Libre!AT2', data)
-    return res.status(200).send({
-      message: 'Success',
-      updatedRows: data.length,
-      updatedSales: new Set(data.map((sale) => sale[0])).size,
-      data: data,
-      googleStatus: append,
+    const rows = await getRows('Mercado Libre!AT2:AT')
+    const status = rows.status
+    const values = rows.data.values
+
+    let data
+    let index
+    if (status === 200) {
+      if (values && values.length > 0) {
+        index = values.findIndex((value) => value[0] == [from]) + 2
+        const range = `Mercado Libre!AT${index}:CM`
+        if (index > 1) {
+          await clearData(range)
+        }
+      }
+      data = await getOrders(token, from)
+
+      const append = await appendData('Mercado Libre!AT2', data)
+      return res.status(200).send({
+        message: 'Success',
+        updatedRows: data.length,
+        updatedSales: new Set(data.map((sale) => sale[0])).size,
+        data: data,
+        googleStatus: append,
+      })
+    } else {
+      res.status(404).send('Not found')
+    }
+  } catch (error) {
+    res.status(500).send({
+      message: 'Error',
+      error: error,
     })
-  } else {
-    res.status(404).send('Not found')
   }
 })
 
