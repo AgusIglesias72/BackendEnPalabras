@@ -19,31 +19,40 @@ getAllRouter.get('/', async (_req, res) => {
 })
 
 getAllRouter.get('/:id', async (req, res) => {
-  // get the data from the data.txt file
-  const data = fs.readFileSync('data.txt', 'utf8')
-  const dataJSON = JSON.parse(data)
+  try {
+    // get the data from the data.txt file
+    const data = fs.readFileSync('data.txt', 'utf8')
+    const dataJSON = JSON.parse(data)
 
-  const id = req.params.id
-  const index = dataJSON.findIndex((value) => value.id_orden == id)
-  const sale = dataJSON[index]
-  const associated = dataJSON.filter(
-    (value) =>
-      (value.mail === sale.mail || value.dni === sale.dni) &&
-      value.id_orden !== sale.id_orden
-  )
+    const id = req.params.id
+    const index = dataJSON.findIndex((value) => value.id_orden == id)
+    const sale = dataJSON[index]
+    const associated = dataJSON.filter(
+      (value) =>
+        value.id_orden !== sale.id_orden &&
+        ((value.mail !== '' && value.mail === sale.mail) ||
+          (value.dni !== '' && value.dni === sale.dni))
+    )
 
-  if (index == -1) {
+    if (index == -1) {
+      return res.status(404).send({
+        message: 'Error',
+        error: 'No se encontró el ID',
+      })
+    }
+
+    return res.status(200).send({
+      message: 'Success',
+      salesValue: sale,
+      associatedSales: associated,
+      associatedSales: associated,
+    })
+  } catch (error) {
     return res.status(404).send({
       message: 'Error',
-      error: 'No se encontró el ID',
+      error: error,
     })
   }
-
-  return res.status(200).send({
-    message: 'Success',
-    salesValue: sale,
-    associatedSales: associated,
-  })
 })
 
 getAllRouter.put('/', async (_req, res) => {
