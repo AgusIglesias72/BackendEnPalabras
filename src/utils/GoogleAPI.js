@@ -1,11 +1,11 @@
 import { google } from 'googleapis'
 
 const auth = new google.auth.GoogleAuth({
-  keyFile: './src/connections/cred.json',
+  keyFile: "",
   scopes: 'https://www.googleapis.com/auth/spreadsheets',
 })
 
-const spreadsheetId = '1AFed1X05B8VtdnKX9o1ajSEjvn4-7fA92a8tQ7C7gpc'
+const spreadsheetId = ""
 const client = async () => {
   return await auth.getClient()
 }
